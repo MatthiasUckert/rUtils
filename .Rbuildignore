@@ -1,0 +1,5 @@
+^rUtils\.Rproj$
+^\.Rproj\.user$
+_test_data
+^data-raw$
+^LICENSE\.md$
