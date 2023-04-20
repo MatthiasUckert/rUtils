@@ -2,7 +2,13 @@
 
 export("%>%")
 export(assign_files)
+export(backup_script)
+export(bu_name)
+export(dloc)
+export(get_templates)
+export(init_project)
 export(lfc)
 export(lft)
 export(read_files)
+export(use_functions)
 importFrom(magrittr,"%>%")

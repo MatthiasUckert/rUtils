@@ -70,15 +70,18 @@ lfc <- function(.dirs, .reg = NULL, .rec = FALSE) {
 #' @export
 #'
 #' @examples
+#'
+#' \dontrun{
 #' library(rUtils)
 #'
-#' dir   <- system.file("extdata", package = "rUtils")
+#' dir   <- system.file("extdata/files", package = "rUtils")
 #' files <- lfc(dir)
 #'
 #' read_files(files[1])
 #' read_files(files[2])
 #'
 #' rm(dir, files)
+#' }
 read_files <- function(.path) {
   ext_ <- tools::file_ext(.path)
 
@@ -159,4 +162,37 @@ assign_files <- function(.lst, .prefix = "", .suffix = "") {
 }
 
 
+#' Get Backup Name
+#'
+#' @param .name A String
+#' @param .prec
+#' 1 = "%Y"
+#' 2 = "%Y-%m"
+#' 3 = "%Y-%m-%d"
+#' 4 = "%Y-%m-%d-%H"
+#' 5 = "%Y-%m-%d-%H-%M"
+#' 6 = "%Y-%m-%d-%H-%M-%S"
+#' @param .sep S separatot between time and name
+#'
+#' @return A string
+#' @export
+#'
+#' @examples
+#' bu_name("file", 6)
+#' bu_name("file", 5)
+#' bu_name("file", 4)
+#' bu_name("file", 3)
+#' bu_name("file", 2)
+#' bu_name("file", 1)
+bu_name <- function(.name = "", .prec = 6, .sep = "_") {
+  format_ <- c(
+    "%Y",
+    "%Y-%m",
+    "%Y-%m-%d",
+    "%Y-%m-%d-%H",
+    "%Y-%m-%d-%H-%M",
+    "%Y-%m-%d-%H-%M-%S"
+  )
 
+  paste(format(Sys.time(), format = format_[.prec]), .name, sep = .sep)
+}

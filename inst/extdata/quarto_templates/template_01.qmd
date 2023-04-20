@@ -1,0 +1,43 @@
+---
+title: "Matthias Uckert"
+format: html
+editor: visual
+---
+
+```{=html}
+<style type="text/css">
+.main-container {
+  max-width: 2500px !important;
+  margin-left: auto;
+  margin-right: auto;
+}
+</style>
+```
+
+
+```{r setup, include=FALSE, purl=FALSE}
+.name_script <- "AAAAAAA"
+
+.dir_here <- normalizePath(here::here())
+.dir_out  <- file.path(.dir_here, file.path("2_output/", .name_script))
+
+knitr::opts_knit$set(root.dir = .dir_here) 
+knitr::opts_chunk$set(root.dir = .dir_here) 
+rUtils::dloc(.dir_out, .init = TRUE)
+.__init__
+```
+
+# Description
+
+Fill Description 
+
+# Project Setup
+
+```{r Project Setup, message=FALSE, warning=FALSE}
+library <- function(...) suppressPackageStartupMessages(base::library(...))
+
+library(tidyverse); library(rUtils); library(rCache)
+options(scipen = 999)
+.path_fun <- use_functions(.dir_here, NULL, .name_script)
+.path_fun
+```

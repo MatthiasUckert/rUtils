@@ -16,13 +16,16 @@ An R object
 Read any of the following files: .rds, .fst, .xlsx, .xls, .csv, .dta
 }
 \examples{
+
+\dontrun{
 library(rUtils)
 
-dir   <- system.file("extdata", package = "rUtils")
+dir   <- system.file("extdata/files", package = "rUtils")
 files <- lfc(dir)
 
 read_files(files[1])
 read_files(files[2])
 
 rm(dir, files)
+}
 }
