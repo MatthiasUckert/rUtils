@@ -211,7 +211,7 @@ bu_name <- function(.name = "", .prec = 6, .sep = "_") {
 upf <- function(.dir_out, .dir_in = NULL, .names = NULL) {
 
   if (!is.null(.dir_in)) {
-    names_  <- list.files(.dir_in)
+    names_  <- fs::path_ext_remove(list.files(.dir_in))
   } else {
     names_ <- .names
   }
