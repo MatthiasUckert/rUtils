@@ -196,3 +196,26 @@ bu_name <- function(.name = "", .prec = 6, .sep = "_") {
 
   paste(format(Sys.time(), format = format_[.prec]), .name, sep = .sep)
 }
+
+
+#' Unprocessed Files
+#'
+#' Filter only those file names that are not already processed
+#'
+#' @param .dir_out A directory with Files
+#' @param .dir_in A directory with Files
+#' @param .names A vector of file names
+#'
+#' @return
+#' @export
+upf <- function(.dir_out, .dir_in = NULL, .names = NULL) {
+
+  if (!is.null(.dir_in)) {
+    names_  <- list.files(.dir_in)
+  } else {
+    names_ <- .names
+  }
+
+  use_ <- names_[!names_ %in% list.files(.dir_out)]
+  return(use_)
+}
