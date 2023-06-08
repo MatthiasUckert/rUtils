@@ -216,6 +216,6 @@ upf <- function(.dir_out, .dir_in = NULL, .names = NULL) {
     names_ <- .names
   }
 
-  use_ <- names_[!names_ %in% list.files(.dir_out)]
+  use_ <- names_[!names_ %in% fs::path_ext_remove(list.files(.dir_out))]
   return(use_)
 }
