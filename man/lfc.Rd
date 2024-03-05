@@ -21,10 +21,7 @@ List Files in Character (Vector)
 }
 \examples{
 library(rUtils)
-
 dir <- system.file("extdata", package = "rUtils")
-
 lfc(dir)
-
 rm(dir)
 }

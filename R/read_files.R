@@ -10,11 +10,8 @@
 #'
 #' @examples
 #' library(rUtils)
-#'
 #' dir <- system.file("extdata", package = "rUtils")
-#'
 #' lft(dir)
-#'
 #' rm(dir)
 lft <- function(.dirs, .reg = NULL, .id = "doc_id", .rec = FALSE) {
   path <- file_ext <- id <- NULL
@@ -43,11 +40,8 @@ lft <- function(.dirs, .reg = NULL, .id = "doc_id", .rec = FALSE) {
 #'
 #' @examples
 #' library(rUtils)
-#'
 #' dir <- system.file("extdata", package = "rUtils")
-#'
 #' lfc(dir)
-#'
 #' rm(dir)
 lfc <- function(.dirs, .reg = NULL, .rec = FALSE) {
   fils <- unlist(purrr::map(.dirs, ~ list.files(.x, .reg, FALSE, TRUE, .rec)))
@@ -97,6 +91,10 @@ read_files <- function(.path) {
     obj_ <- data.table::fread(.path)
   } else if (ext_ == "dta") {
     obj_ <- rio::import(.path)
+  } else if (ext_ == "parquet") {
+    obj_ <- arrow::read_parquet(.path)
+  } else if (ext_ == "feather") {
+    obj_ <- arrow::read_feather(.path)
   } else {
     stop("Format not supported.", call. = FALSE)
   }
@@ -121,7 +119,7 @@ read_files <- function(.path) {
 #'
 #' library(rUtils)
 #'
-#' dir <- system.file("extdata", package = "rUtils")
+#' dir <- system.file("extdata/files", package = "rUtils")
 #'
 #' files <- lfc(dir)
 #' assign_files(files)

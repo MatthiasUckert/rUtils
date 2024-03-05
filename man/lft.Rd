@@ -23,10 +23,7 @@ List Files in Table
 }
 \examples{
 library(rUtils)
-
 dir <- system.file("extdata", package = "rUtils")
-
 lft(dir)
-
 rm(dir)
 }

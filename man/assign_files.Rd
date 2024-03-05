@@ -23,7 +23,7 @@ Assign Files to the Global Environment
 
 library(rUtils)
 
-dir <- system.file("extdata", package = "rUtils")
+dir <- system.file("extdata/files", package = "rUtils")
 
 files <- lfc(dir)
 assign_files(files)

@@ -7,7 +7,7 @@
 filter_unprocessed_files(.tab, .dir, .verbose = TRUE)
 }
 \arguments{
-\item{.tab}{A data frame that should at least contain the column 'doc_id' (normally created by lft()).}
+\item{.tab}{A data frame that should at least contain the column 'doc_id' (usually created by lft()).}
 
 \item{.dir}{Directory where the files are located.}
 
