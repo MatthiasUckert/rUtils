@@ -130,11 +130,11 @@ assign_files <- function(.lst, .prefix = "", .suffix = "") {
 
   tab_ <- tibble::enframe(.lst, value = "path") %>%
     tidyr::unnest(path) %>%
-    dplyr::filter(!purrr::map_lgl(name, exists)) %>%
     dplyr::mutate(
       name = paste0(.prefix, name, .suffix),
       path = purrr::set_names(path, name)
-    )
+    ) %>%
+    dplyr::filter(!purrr::map_lgl(name, exists))
 
   if (nrow(tab_) == 0) {
     return(message("All variable already assigned"))
