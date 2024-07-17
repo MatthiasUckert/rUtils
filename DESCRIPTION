@@ -1,14 +1,14 @@
 Package: rUtils
-Title: What the Package Does (One Line, Title Case)
+Title: Utility Functions for File Handling and Data Manipulation in R
 Version: 0.0.0.9000
 Authors@R: 
     person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Description: rUtils provides a suite of utility functions for efficient file handling and data manipulation in R. It includes functions to list, read, and assign files to the global environment, as well as to filter and process files based on specific criteria. The package supports various file formats and offers parallel processing capabilities to enhance performance when dealing with multiple files.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Imports: 
     arrow,
     crayon,
@@ -16,6 +16,8 @@ Imports:
     dplyr,
     fs,
     fst,
+    furrr,
+    future,
     glue,
     magrittr,
     openxlsx,

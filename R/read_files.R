@@ -248,3 +248,27 @@ filter_unprocessed_files <- function(.tab, .dir, .verbose = TRUE) {
   return(out_)
 
 }
+
+
+#' Read Multiple Tables
+#'
+#' This function reads multiple files concurrently and combines them into a single data frame.
+#'
+#' @param .paths A character vector of file paths to read.
+#' @param .id A string indicating the column name to use for the source identifier. Default is NULL.
+#' @param .workers An integer specifying the number of workers to use for parallel processing. Default is 1L.
+#' @param .verbose A logical indicating whether to print progress messages. Default is TRUE.
+#'
+#' @return A combined data frame of all the read files.
+#' @export
+read_multiple_tables <- function(.paths, .id = NULL, .workers = 1L, .verbose = TRUE) {
+  future::plan("multisession", workers = .workers)
+  out_ <- furrr::future_map(
+    .x = .paths,
+    .f = read_files,
+    .options = furrr::furrr_options(seed = TRUE, globals = "read_files"),
+    .progress = .verbose
+  ) %>% dplyr::bind_rows(.id = .id)
+  future::plan("default")
+  on.exit(future::plan("default"))
+}
