@@ -261,7 +261,7 @@ filter_unprocessed_files <- function(.tab, .dir, .verbose = TRUE) {
 #'
 #' @return A combined data frame of all the read files.
 #' @export
-read_multiple_tables <- function(.paths, .id = NULL, .workers = 1L, .verbose = TRUE) {
+read_tables <- function(.paths, .id = NULL, .workers = 1L, .verbose = TRUE) {
   future::plan("multisession", workers = .workers)
   out_ <- furrr::future_map(
     .x = .paths,
@@ -271,4 +271,6 @@ read_multiple_tables <- function(.paths, .id = NULL, .workers = 1L, .verbose = T
   ) %>% dplyr::bind_rows(.id = .id)
   future::plan("default")
   on.exit(future::plan("default"))
+
+  return(out_)
 }
