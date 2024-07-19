@@ -53,29 +53,19 @@ lfc <- function(.dirs, .reg = NULL, .rec = FALSE) {
   return(fils)
 }
 
-#' Read Files
+#' Read Files in Various Formats
 #'
-#' @description
-#' Read any of the following files: .rds, .fst, .xlsx, .xls, .csv, .dta
+#' This function reads a file from the specified path and converts it into a tibble.
+#' Supported file formats include RDS, FST, XLSX, XLS, CSV, DTA, Parquet, and Feather.
 #'
-#' @param .path Full path to the file
-#'
-#' @return An R object
-#' @export
-#'
+#' @param .path A character string representing the path to the file to be read.
+#' @return A tibble containing the data from the file.
 #' @examples
-#'
 #' \dontrun{
-#' library(rUtils)
-#'
-#' dir   <- system.file("extdata/files", package = "rUtils")
-#' files <- lfc(dir)
-#'
-#' read_files(files[1])
-#' read_files(files[2])
-#'
-#' rm(dir, files)
+#'   data <- read_files("data/sample.csv")
+#'   data <- read_files("data/sample.rds")
 #' }
+#' @export
 read_files <- function(.path) {
   ext_ <- tools::file_ext(.path)
 
@@ -105,6 +95,52 @@ read_files <- function(.path) {
 
   return(obj_)
 }
+
+
+#' Write Files in Various Formats
+#'
+#' This function writes a tibble to the specified path in various formats.
+#' Supported file formats include RDS, FST, XLSX, CSV, DTA, Parquet, and Feather.
+#'
+#' @param .tab A tibble or data frame to be written to the file.
+#' @param .path A character string representing the path where the file should be saved.
+#' @examples
+#' \dontrun{
+#'   write_files(data, "data/sample.csv")
+#'   write_files(data, "data/sample.rds")
+#' }
+#' @export
+write_files <- function(.tab, .path) {
+  ext_ <- tools::file_ext(.path)
+  fs::dir_create(dirname(.path))
+
+  if (ext_ == "rds") {
+    fun_ <- function(.tab, .path) readr::write_rds(.tab, .path, compress = "gz")
+  } else if (ext_ == "fst") {
+    fun_ <- function(.tab, .path) fst::write_fst(.tab, .path, 100)
+  } else if (ext_ == "xlsx") {
+    fun_ <- function(.tab, .path) openxlsx::write.xlsx(.tab, .path, TRUE, TRUE)
+  } else if (ext_ == "csv") {
+    fun_ <- function(.tab, .path) data.table::fwrite(.tab, .path, sep = ";")
+  } else if (ext_ == "dta") {
+    fun_ <- function(.tab, .path) rio::export(.tab, .path)
+  } else if (ext_ == "parquet") {
+    fun_ <- function(.tab, .path) arrow::write_parquet(.tab, .path)
+  } else if (ext_ == "feather") {
+    fun_ <- function(.tab, .path) arrow::write_feather(.tab, .path)
+  } else {
+    stop("Format not supported.", call. = FALSE)
+  }
+
+  .save <- try(fun_(.tab, .path), silent = TRUE)
+  for (i in 1:10) {
+    if (!inherits(.save, "try-error")) break
+    Sys.sleep(1)
+    .save <- try(fun_(.tab, .path), silent = TRUE)
+  }
+}
+
+
 
 #' Assign Files to the Global Environment
 #'

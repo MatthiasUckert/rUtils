@@ -3,3 +3,4 @@
 _test_data
 ^data-raw$
 ^LICENSE\.md$
+_debug

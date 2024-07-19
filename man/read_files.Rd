@@ -2,30 +2,23 @@
 % Please edit documentation in R/read_files.R
 \name{read_files}
 \alias{read_files}
-\title{Read Files}
+\title{Read Files in Various Formats}
 \usage{
 read_files(.path)
 }
 \arguments{
-\item{.path}{Full path to the file}
+\item{.path}{A character string representing the path to the file to be read.}
 }
 \value{
-An R object
+A tibble containing the data from the file.
 }
 \description{
-Read any of the following files: .rds, .fst, .xlsx, .xls, .csv, .dta
+This function reads a file from the specified path and converts it into a tibble.
+Supported file formats include RDS, FST, XLSX, XLS, CSV, DTA, Parquet, and Feather.
 }
 \examples{
-
 \dontrun{
-library(rUtils)
-
-dir   <- system.file("extdata/files", package = "rUtils")
-files <- lfc(dir)
-
-read_files(files[1])
-read_files(files[2])
-
-rm(dir, files)
+  data <- read_files("data/sample.csv")
+  data <- read_files("data/sample.rds")
 }
 }
