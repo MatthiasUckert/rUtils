@@ -104,6 +104,8 @@ read_files <- function(.path) {
 #'
 #' @param .tab A tibble or data frame to be written to the file.
 #' @param .path A character string representing the path where the file should be saved.
+#' @return NULL
+#'
 #' @examples
 #' \dontrun{
 #'   write_files(data, "data/sample.csv")
@@ -135,12 +137,15 @@ write_files <- function(.tab, .path) {
   .save <- try(fun_(.tab, .path), silent = TRUE)
   for (i in 1:10) {
     if (!inherits(.save, "try-error")) break
+    try(file.remove(.path), silent = TRUE)
     Sys.sleep(1)
     .save <- try(fun_(.tab, .path), silent = TRUE)
   }
+
+  if (inherits(.save, "try-error")) try(file.remove(.path), silent = TRUE)
 }
 
-
+# .path <- "_debug/test.parquet"
 
 #' Assign Files to the Global Environment
 #'
@@ -240,7 +245,7 @@ bu_name <- function(.name = "", .prec = 6, .sep = "_") {
 #' @param .dir_in A directory with Files
 #' @param .names A vector of file names
 #'
-#' @return
+#' @return ...
 #' @export
 upf <- function(.dir_out, .dir_in = NULL, .names = NULL) {
 

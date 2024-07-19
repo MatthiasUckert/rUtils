@@ -13,6 +13,9 @@ upf(.dir_out, .dir_in = NULL, .names = NULL)
 
 \item{.names}{A vector of file names}
 }
+\value{
+...
+}
 \description{
 Filter only those file names that are not already processed
 }
