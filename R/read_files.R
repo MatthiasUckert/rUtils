@@ -85,6 +85,8 @@ read_files <- function(.path) {
     obj_ <- arrow::read_parquet(.path)
   } else if (ext_ == "feather") {
     obj_ <- arrow::read_feather(.path)
+  } else if (ext_ == "qs") {
+    obj_ <- qs::qread(.path)
   } else {
     stop("Format not supported.", call. = FALSE)
   }
@@ -102,7 +104,7 @@ read_files <- function(.path) {
 #' This function writes a tibble to the specified path in various formats.
 #' Supported file formats include RDS, FST, XLSX, CSV, DTA, Parquet, and Feather.
 #'
-#' @param .tab A tibble or data frame to be written to the file.
+#' @param .tab An R Object
 #' @param .path A character string representing the path where the file should be saved.
 #' @return NULL
 #'
@@ -112,34 +114,36 @@ read_files <- function(.path) {
 #'   write_files(data, "data/sample.rds")
 #' }
 #' @export
-write_files <- function(.tab, .path) {
+write_files <- function(.obj, .path) {
   ext_ <- tools::file_ext(.path)
   fs::dir_create(dirname(.path))
 
   if (ext_ == "rds") {
-    fun_ <- function(.tab, .path) readr::write_rds(.tab, .path, compress = "gz")
+    fun_ <- function(.obj, .path) readr::write_rds(.obj, .path, compress = "gz")
   } else if (ext_ == "fst") {
-    fun_ <- function(.tab, .path) fst::write_fst(.tab, .path, 100)
+    fun_ <- function(.obj, .path) fst::write_fst(.obj, .path, 100)
   } else if (ext_ == "xlsx") {
-    fun_ <- function(.tab, .path) openxlsx::write.xlsx(.tab, .path, TRUE, TRUE)
+    fun_ <- function(.obj, .path) openxlsx::write.xlsx(.obj, .path, TRUE, TRUE)
   } else if (ext_ == "csv") {
-    fun_ <- function(.tab, .path) data.table::fwrite(.tab, .path, sep = ";")
+    fun_ <- function(.obj, .path) data.table::fwrite(.obj, .path, sep = ";")
   } else if (ext_ == "dta") {
-    fun_ <- function(.tab, .path) rio::export(.tab, .path)
+    fun_ <- function(.obj, .path) rio::export(.obj, .path)
   } else if (ext_ == "parquet") {
-    fun_ <- function(.tab, .path) arrow::write_parquet(.tab, .path)
+    fun_ <- function(.obj, .path) arrow::write_parquet(.obj, .path)
   } else if (ext_ == "feather") {
-    fun_ <- function(.tab, .path) arrow::write_feather(.tab, .path)
+    fun_ <- function(.obj, .path) arrow::write_feather(.obj, .path)
+  } else if (ext_ == "qs") {
+    fun_ <- function(.obj, .path) qs::qsave(.obj, .path, preset = "archive")
   } else {
     stop("Format not supported.", call. = FALSE)
   }
 
-  .save <- try(fun_(.tab, .path), silent = TRUE)
+  .save <- try(fun_(.obj, .path), silent = TRUE)
   for (i in 1:10) {
     if (!inherits(.save, "try-error")) break
     try(file.remove(.path), silent = TRUE)
     Sys.sleep(1)
-    .save <- try(fun_(.tab, .path), silent = TRUE)
+    .save <- try(fun_(.obj, .path), silent = TRUE)
   }
 
   if (inherits(.save, "try-error")) try(file.remove(.path), silent = TRUE)
@@ -237,58 +241,6 @@ bu_name <- function(.name = "", .prec = 6, .sep = "_") {
 }
 
 
-#' Unprocessed Files
-#'
-#' Filter only those file names that are not already processed
-#'
-#' @param .dir_out A directory with Files
-#' @param .dir_in A directory with Files
-#' @param .names A vector of file names
-#'
-#' @return ...
-#' @export
-upf <- function(.dir_out, .dir_in = NULL, .names = NULL) {
-
-  if (!is.null(.dir_in)) {
-    names_  <- fs::path_ext_remove(list.files(.dir_in))
-  } else {
-    names_ <- .names
-  }
-
-  use_ <- names_[!names_ %in% fs::path_ext_remove(list.files(.dir_out))]
-  return(use_)
-}
-
-#' Filter Unprocessed Files
-#'
-#' This function filters out files that have already been processed.
-#'
-#' @param .tab A data frame that should at least contain the column 'doc_id' (usually created by lft()).
-#' @param .dir Directory where the files are located.
-#' @param .verbose Logical. If TRUE (default), prints out the number of files to be processed.
-#'
-#' @return A filtered data frame containing only the unprocessed files.
-#'
-#' @export
-filter_unprocessed_files <- function(.tab, .dir, .verbose = TRUE) {
-
-  doc_id <- NULL
-
-  if (!"doc_id" %in% colnames(.tab)) {
-    stop("Files Table must contain the column 'doc_id'", call. = FALSE)
-  }
-
-  fils_ <- lft(.dir)
-
-  out_ <- dplyr::filter(.tab, !doc_id %in% fils_$doc_id)
-
-  if (.verbose) {
-    cat(glue::glue("\n {scales::comma(nrow(out_))} Files to be Processed"))
-  }
-
-  return(out_)
-
-}
 
 
 #' Read Multiple Tables
