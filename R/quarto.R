@@ -9,7 +9,7 @@
 #' @return A path or a directory. If `.init` is set to TRUE, the function returns NULL.
 #' @export
 dloc <- function(..., .init = FALSE) {
-  `.__init__` <- NULL
+  # `.__init__` <- NULL
 
   if (.init) {
     path_0_ <- fs::path_abs(file.path(...))
@@ -24,8 +24,8 @@ dloc <- function(..., .init = FALSE) {
   }
 
   if (.init) {
-    assign(.__init__, path_0_, globalenv())
-    # .__init__ <<- path_0_
+    # assign(.__init__, path_0_, globalenv())
+    .__init__ <<- path_0_
     fs::dir_create(path_0_)
     return(NULL)
   }
