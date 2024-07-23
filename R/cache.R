@@ -28,11 +28,11 @@
 cache_obj <- function(.expr = { }, .dir, .name, .rerun = FALSE) {
   # DEBUG -- -- -- -- -- -- -- -- -- -- -- -- --
   if (is.null(sys.calls())) {
-    .expr  <- tibble::tibble(id = 1:10)
-    .expr  <- 1:10
-    .dir   <- "_debug_data/cache_obj"
-    .name  <- "cache_test"
-    .rerun <- FALSE
+    # .expr  <- tibble::tibble(id = 1:10)
+    # .expr  <- 1:10
+    # .dir   <- "_debug_data/cache_obj"
+    # .name  <- "cache_test"
+    # .rerun <- FALSE
     cat("DEBUGING MODE: This Message should not appear when calling the function")
   }
 
