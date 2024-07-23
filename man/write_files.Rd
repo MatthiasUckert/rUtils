@@ -4,10 +4,10 @@
 \alias{write_files}
 \title{Write Files in Various Formats}
 \usage{
-write_files(.tab, .path)
+write_files(.obj, .path)
 }
 \arguments{
-\item{.tab}{A tibble or data frame to be written to the file.}
+\item{.obj}{An R Object}
 
 \item{.path}{A character string representing the path where the file should be saved.}
 }

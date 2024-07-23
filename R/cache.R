@@ -26,6 +26,9 @@
 #' cached object as a side effect.
 #' @export
 cache_obj <- function(.expr = { }, .dir, .name, .rerun = FALSE) {
+  # Assign Global Variables -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- ---
+  doc_id <- NULL
+
   # DEBUG -- -- -- -- -- -- -- -- -- -- -- -- --
   if (is.null(sys.calls())) {
     # .expr  <- tibble::tibble(id = 1:10)

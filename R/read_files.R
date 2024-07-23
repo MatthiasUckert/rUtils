@@ -104,7 +104,7 @@ read_files <- function(.path) {
 #' This function writes a tibble to the specified path in various formats.
 #' Supported file formats include RDS, FST, XLSX, CSV, DTA, Parquet, and Feather.
 #'
-#' @param .tab An R Object
+#' @param .obj An R Object
 #' @param .path A character string representing the path where the file should be saved.
 #' @return NULL
 #'

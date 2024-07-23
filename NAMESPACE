@@ -2,12 +2,11 @@
 
 export("%>%")
 export(assign_files)
-export(backup_script)
 export(bu_name)
+export(cache_obj)
 export(dloc)
 export(filter_unprocessed_files)
 export(get_dups)
-export(get_templates)
 export(init_project)
 export(lfc)
 export(lft)

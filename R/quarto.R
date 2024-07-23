@@ -9,7 +9,7 @@
 #' @return A path or a directory. If `.init` is set to TRUE, the function returns NULL.
 #' @export
 dloc <- function(..., .init = FALSE) {
-  # `.__init__` <- NULL
+  `.__init__` <- NULL
 
   if (.init) {
     path_0_ <- fs::path_abs(file.path(...))
@@ -24,7 +24,8 @@ dloc <- function(..., .init = FALSE) {
   }
 
   if (.init) {
-    .__init__ <<- path_0_
+    assign(.__init__, path_0_, globalenv())
+    # .__init__ <<- path_0_
     fs::dir_create(path_0_)
     return(NULL)
   }
@@ -87,58 +88,58 @@ use_functions <- function(.dir_here, .dir_script = NULL, .name_script, .browse =
   return(.path)
 }
 
-
-#' Get Templates
 #'
-#' This function retrieves a template file from the "rUtils" package, replaces a placeholder
-#' with the given file name, and saves the modified file to the "1_code" directory.
-#' Optionally, the function can open the file in a web browser.
+#' #' Get Templates
+#' #'
+#' #' This function retrieves a template file from the "rUtils" package, replaces a placeholder
+#' #' with the given file name, and saves the modified file to the "1_code" directory.
+#' #' Optionally, the function can open the file in a web browser.
+#' #'
+#' #' @param .template Not relevant (NULL by default).
+#' #' @param .name File Name.
+#' #' @param .open Logical, if TRUE, opens the script in a web browser. Default is TRUE.
+#' #'
+#' #' @return Copied and modified template file.
+#' #' @export
+#' get_templates <- function(.template = NULL, .name, .open = TRUE) {
+#'   path_ <- system.file("extdata/quarto_templates/template_01.qmd", package = "rUtils")
+#'   text_ <- readLines(path_)
+#'   text_ <- gsub("AAAAAAA", .name, text_)
+#'   out_ <- file.path("1_code", paste0(.name, ".qmd"))
+#'   print(out_)
+#'   writeLines(text = text_, con = out_)
 #'
-#' @param .template Not relevant (NULL by default).
-#' @param .name File Name.
-#' @param .open Logical, if TRUE, opens the script in a web browser. Default is TRUE.
+#'   if (.open) {
+#'     utils::browseURL(out_)
+#'   }
+#' }
 #'
-#' @return Copied and modified template file.
-#' @export
-get_templates <- function(.template = NULL, .name, .open = TRUE) {
-  path_ <- system.file("extdata/quarto_templates/template_01.qmd", package = "rUtils")
-  text_ <- readLines(path_)
-  text_ <- gsub("AAAAAAA", .name, text_)
-  out_ <- file.path("1_code", paste0(.name, ".qmd"))
-  print(out_)
-  writeLines(text = text_, con = out_)
-
-  if (.open) {
-    utils::browseURL(out_)
-  }
-}
-
-#' Backup Script
+#' #' Backup Script
+#' #'
+#' #' This function creates a backup of the specified Rmd and function files by copying them to the "_backup"
+#' #' subdirectory within the "1_code" directory.
+#' #'
+#' #' @param .dir_here Main Directory.
+#' #' @param .dir_script Script Directory (optional).
+#' #' @param .name_script Script Name.
+#' #'
+#' #' @return No return value; creates backup copies of specified files.
+#' #' @export
+#' backup_script <- function(.dir_here, .dir_script = NULL, .name_script) {
+#'   dir_co_ <- file.path(.dir_here, "1_code")
+#'   dir_bu_ <- file.path(dir_co_, "_backup")
+#'   if (!dir.exists(dir_bu_)) dir.create(dir_bu_, FALSE, TRUE)
 #'
-#' This function creates a backup of the specified Rmd and function files by copying them to the "_backup"
-#' subdirectory within the "1_code" directory.
 #'
-#' @param .dir_here Main Directory.
-#' @param .dir_script Script Directory (optional).
-#' @param .name_script Script Name.
+#'   if (!is.null(.dir_script)) {
+#'     fil_rmd_ <- file.path(dir_co_, .dir_script, paste0(.name_script, ".Rmd"))
+#'     fil_fun_ <- file.path(dir_co_, .dir_script, paste0("f-", .dir_script, "-", .name_script, ".R"))
+#'   } else {
+#'     fil_rmd_ <- file.path(dir_co_, paste0(.name_script, ".Rmd"))
+#'     fil_fun_ <- file.path(dir_co_, paste0("f-", .name_script, ".R"))
+#'   }
 #'
-#' @return No return value; creates backup copies of specified files.
-#' @export
-backup_script <- function(.dir_here, .dir_script = NULL, .name_script) {
-  dir_co_ <- file.path(.dir_here, "1_code")
-  dir_bu_ <- file.path(dir_co_, "_backup")
-  if (!dir.exists(dir_bu_)) dir.create(dir_bu_, FALSE, TRUE)
-
-
-  if (!is.null(.dir_script)) {
-    fil_rmd_ <- file.path(dir_co_, .dir_script, paste0(.name_script, ".Rmd"))
-    fil_fun_ <- file.path(dir_co_, .dir_script, paste0("f-", .dir_script, "-", .name_script, ".R"))
-  } else {
-    fil_rmd_ <- file.path(dir_co_, paste0(.name_script, ".Rmd"))
-    fil_fun_ <- file.path(dir_co_, paste0("f-", .name_script, ".R"))
-  }
-
-  file.copy(fil_rmd_, file.path(dir_bu_, bu_name(basename(fil_rmd_), 6)))
-  file.copy(fil_fun_, file.path(dir_bu_, bu_name(basename(fil_fun_), 6)))
-
-}
+#'   file.copy(fil_rmd_, file.path(dir_bu_, bu_name(basename(fil_rmd_), 6)))
+#'   file.copy(fil_fun_, file.path(dir_bu_, bu_name(basename(fil_fun_), 6)))
+#'
+#' }
