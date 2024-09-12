@@ -267,3 +267,61 @@ read_tables <- function(.paths, .id = NULL, .workers = 1L, .verbose = TRUE) {
 
   return(out_)
 }
+
+#' Append a dataframe to a CSV file, skipping if locked
+#'
+#' This function attempts to append a dataframe to a CSV file.
+#' If the file is locked, it skips the write operation without error.
+#'
+#' @param .tab A dataframe or tibble to be appended.
+#' @param .path A string specifying the file path for the output CSV.
+#'
+#' @return Logical indicating whether the write operation was performed (TRUE) or skipped (FALSE).
+#'
+#' @importFrom filelock lock unlock
+#'
+#' @examples
+#' \dontrun{
+#' df <- data.frame(x = 1:5, y = letters[1:5])
+#' result <- write_append(df, "output.csv")
+#' if (result) print("Data written") else print("Write skipped")
+#' }
+#'
+#' @export
+write_append <- function(.tab, .path) {
+  if (!is.data.frame(.tab)) {
+    stop("'.tab' must be a dataframe or tibble")
+  }
+  if (!is.character(.path) || length(.path) != 1) {
+    stop("'.path' must be a single string specifying the file path")
+  }
+
+  tryCatch({
+    result <- append_to_csv(.tab, .path)
+    return(result)
+  }, error = function(e) {
+    warning(paste("Error in write_append:", e$message))
+    return(FALSE)
+  })
+}
+
+append_to_csv <- function(.tab, .path) {
+  lock_file <- paste0(.path, ".lock")
+  lock <- filelock::lock(lock_file, timeout = 5000)
+
+  if (inherits(lock, "try-error")) {
+    return(FALSE)  # Couldn't acquire lock, skip writing
+  }
+
+  on.exit(filelock::unlock(lock))
+
+  if (!file.exists(.path)) {
+    utils::write.table(.tab, file = .path, sep = ",", row.names = FALSE,
+                       col.names = TRUE, quote = FALSE)
+  } else {
+    utils::write.table(.tab, file = .path, sep = ",", row.names = FALSE,
+                       col.names = FALSE, append = TRUE, quote = FALSE)
+  }
+
+  return(TRUE)  # Successfully wrote data
+}
