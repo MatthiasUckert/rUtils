@@ -320,12 +320,12 @@ append_to_csv <- function(.tab, .path) {
 
   if (!file.exists(.path)) {
     utils::write.table(.tab,
-      file = .path, sep = "|||", row.names = FALSE,
+      file = .path, sep = ";", row.names = FALSE,
       col.names = TRUE, quote = FALSE
     )
   } else {
     utils::write.table(.tab,
-      file = .path, sep = "|||", row.names = FALSE,
+      file = .path, sep = ";", row.names = FALSE,
       col.names = FALSE, append = TRUE, quote = FALSE
     )
   }
