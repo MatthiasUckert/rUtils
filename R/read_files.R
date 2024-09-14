@@ -62,8 +62,8 @@ lfc <- function(.dirs, .reg = NULL, .rec = FALSE) {
 #' @return A tibble containing the data from the file.
 #' @examples
 #' \dontrun{
-#'   data <- read_files("data/sample.csv")
-#'   data <- read_files("data/sample.rds")
+#' data <- read_files("data/sample.csv")
+#' data <- read_files("data/sample.rds")
 #' }
 #' @export
 read_files <- function(.path) {
@@ -110,8 +110,8 @@ read_files <- function(.path) {
 #'
 #' @examples
 #' \dontrun{
-#'   write_files(data, "data/sample.csv")
-#'   write_files(data, "data/sample.rds")
+#' write_files(data, "data/sample.csv")
+#' write_files(data, "data/sample.rds")
 #' }
 #' @export
 write_files <- function(.obj, .path) {
@@ -296,13 +296,16 @@ write_append <- function(.tab, .path) {
     stop("'.path' must be a single string specifying the file path")
   }
 
-  tryCatch({
-    result <- append_to_csv(.tab, .path)
-    return(result)
-  }, error = function(e) {
-    warning(paste("Error in write_append:", e$message))
-    return(FALSE)
-  })
+  tryCatch(
+    {
+      result <- append_to_csv(.tab, .path)
+      return(result)
+    },
+    error = function(e) {
+      warning(paste("Error in write_append:", e$message))
+      return(FALSE)
+    }
+  )
 }
 
 append_to_csv <- function(.tab, .path) {
@@ -310,18 +313,22 @@ append_to_csv <- function(.tab, .path) {
   lock <- filelock::lock(lock_file, timeout = 5000)
 
   if (inherits(lock, "try-error")) {
-    return(FALSE)  # Couldn't acquire lock, skip writing
+    return(FALSE) # Couldn't acquire lock, skip writing
   }
 
   on.exit(filelock::unlock(lock))
 
   if (!file.exists(.path)) {
-    utils::write.table(.tab, file = .path, sep = ",", row.names = FALSE,
-                       col.names = TRUE, quote = FALSE)
+    utils::write.table(.tab,
+      file = .path, sep = "|||", row.names = FALSE,
+      col.names = TRUE, quote = FALSE
+    )
   } else {
-    utils::write.table(.tab, file = .path, sep = ",", row.names = FALSE,
-                       col.names = FALSE, append = TRUE, quote = FALSE)
+    utils::write.table(.tab,
+      file = .path, sep = "|||", row.names = FALSE,
+      col.names = FALSE, append = TRUE, quote = FALSE
+    )
   }
 
-  return(TRUE)  # Successfully wrote data
+  return(TRUE) # Successfully wrote data
 }

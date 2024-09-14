@@ -17,7 +17,7 @@ Supported file formats include RDS, FST, XLSX, CSV, DTA, Parquet, and Feather.
 }
 \examples{
 \dontrun{
-  write_files(data, "data/sample.csv")
-  write_files(data, "data/sample.rds")
+write_files(data, "data/sample.csv")
+write_files(data, "data/sample.rds")
 }
 }

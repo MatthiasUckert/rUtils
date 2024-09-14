@@ -18,7 +18,7 @@ Supported file formats include RDS, FST, XLSX, XLS, CSV, DTA, Parquet, and Feath
 }
 \examples{
 \dontrun{
-  data <- read_files("data/sample.csv")
-  data <- read_files("data/sample.rds")
+data <- read_files("data/sample.csv")
+data <- read_files("data/sample.rds")
 }
 }
