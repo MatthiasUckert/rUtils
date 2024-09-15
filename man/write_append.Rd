@@ -2,7 +2,8 @@
 % Please edit documentation in R/read_files.R
 \name{write_append}
 \alias{write_append}
-\title{Append a dataframe to a CSV file, skipping if locked}
+\title{This function attempts to append a dataframe to a CSV file.
+If the file is locked, it skips the write operation without error.}
 \usage{
 write_append(.tab, .path)
 }

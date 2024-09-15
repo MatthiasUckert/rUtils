@@ -268,7 +268,7 @@ read_tables <- function(.paths, .id = NULL, .workers = 1L, .verbose = TRUE) {
   return(out_)
 }
 
-#' Append a dataframe to a CSV file, skipping if locked
+# Append a dataframe to a CSV file, skipping if locked
 #'
 #' This function attempts to append a dataframe to a CSV file.
 #' If the file is locked, it skips the write operation without error.
@@ -279,6 +279,7 @@ read_tables <- function(.paths, .id = NULL, .workers = 1L, .verbose = TRUE) {
 #' @return Logical indicating whether the write operation was performed (TRUE) or skipped (FALSE).
 #'
 #' @importFrom filelock lock unlock
+#' @importFrom data.table fwrite
 #'
 #' @examples
 #' \dontrun{
@@ -310,24 +311,37 @@ write_append <- function(.tab, .path) {
 
 append_to_csv <- function(.tab, .path) {
   lock_file <- paste0(.path, ".lock")
-  lock <- filelock::lock(lock_file, timeout = 5000)
+
+  # Attempt to acquire a lock with a timeout
+  lock <- try(filelock::lock(lock_file, timeout = 5000), silent = TRUE)
 
   if (inherits(lock, "try-error")) {
     return(FALSE) # Couldn't acquire lock, skip writing
   }
 
-  on.exit(filelock::unlock(lock))
+  # Ensure the lock is released on exit
+  on.exit(filelock::unlock(lock), add = TRUE)
 
-  if (!file.exists(.path)) {
-    utils::write.table(.tab,
-      file = .path, sep = ";", row.names = FALSE,
-      col.names = TRUE, quote = FALSE
-    )
-  } else {
-    utils::write.table(.tab,
-      file = .path, sep = ";", row.names = FALSE,
-      col.names = FALSE, append = TRUE, quote = FALSE
-    )
+  # Determine if the file exists to write headers accordingly
+  file_exists <- file.exists(.path)
+
+  # Attempt to write the data
+  fwrite_result <- try(
+    data.table::fwrite(
+      x = .tab,
+      file = .path,
+      sep = ",",            # Use comma as the standard CSV separator
+      append = file_exists,
+      col.names = !file_exists,
+      quote = "auto",       # Automatically quote fields containing special characters
+      showProgress = FALSE
+    ),
+    silent = TRUE
+  )
+
+  if (inherits(fwrite_result, "try-error")) {
+    warning(paste("Error in append_to_csv:", fwrite_result))
+    return(FALSE)
   }
 
   return(TRUE) # Successfully wrote data
